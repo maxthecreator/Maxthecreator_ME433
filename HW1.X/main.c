@@ -125,12 +125,14 @@ int main() {
 
     while(1) {
         
-        if (PORTBbits.RB4 == 1){//high 
-            while (_CP0_GET_COUNT() <= 24000){
+         
+            while (_CP0_GET_COUNT() <= 24000){ // flip twice every 1/1000 of a sec
             }
-            LATAINV = 0x8;
-            _CP0_SET_COUNT(0);
-        } 
+            if (PORTBbits.RB4 == 1){//high
+                LATAINV = 0x8;
+                _CP0_SET_COUNT(0);
+            }
+        
 
 	// remember the core timer runs at half the sysclk
 
