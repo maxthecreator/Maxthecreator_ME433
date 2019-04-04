@@ -124,14 +124,13 @@ int main() {
    // b4 pushbutton
 
     while(1) {
-        if (PORTBbits.RB4 == 1) //high 
-        //if portdbits.rb4 the push button is pressed, light is off
-        //if the push button is not pressed:
-        //change to while loop
-            if (_CP0_GET_COUNT() >= 100){ //change to the correct conversion from 48MHz to 1000Hz
-                // flip the switch;
-                _CP0_SET_COUNT(0);
+        
+        if (PORTBbits.RB4 == 1){//high 
+            while (_CP0_GET_COUNT() <= 24000){
             }
+            LATAINV = 0x8;
+            _CP0_SET_COUNT(0);
+        } 
 
 	// remember the core timer runs at half the sysclk
 
