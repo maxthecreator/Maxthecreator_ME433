@@ -113,15 +113,18 @@ int main() {
 // tris is i/o
             //lat is on off for output
             //port is on off for input
+    TRISAbits.TRISA4 = 1;
+    TRISBbits.TRISB4 = 0;
+    LATAbits.LATA4 = 1;
     
-
     
     __builtin_enable_interrupts();
 
-
+   // a4 led 
+   // b4 pushbutton
 
     while(1) {
-
+        if (PORTBbits.RB4 == 1) //high 
         //if portdbits.rb4 the push button is pressed, light is off
         //if the push button is not pressed:
         //change to while loop
