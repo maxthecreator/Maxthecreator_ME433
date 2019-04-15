@@ -1,7 +1,7 @@
 #include<xc.h>           // processor SFR definitions
-
 #include<sys/attribs.h>  // __ISR macro
-
+#include "NU32.h"       // constants, funcs for startup and UART
+#include <math.h> 
 
 
 // DEVCFG0
@@ -62,7 +62,7 @@
 
 // DEVCFG3
 
-#pragma config USERID = 00000013 // some 16bit userid, doesn't matter what
+#pragma config USERID = 0b0000000000000013 // some 16bit userid, doesn't matter what
 
 #pragma config PMDL1WAY = OFF // allow multiple reconfigurations
 
@@ -77,56 +77,27 @@
 
 
 int main() {
-
-
-
     __builtin_disable_interrupts();
-
-
-
     // set the CP0 CONFIG register to indicate that kseg0 is cacheable (0x3)
-
     __builtin_mtc0(_CP0_CONFIG, _CP0_CONFIG_SELECT, 0xa4210583);
-
-
-
     // 0 data RAM access wait states
-
     BMXCONbits.BMXWSDRM = 0x0;
-
-
-
     // enable multi vector interrupts
-
     INTCONbits.MVEC = 0x1;
-
-
-
     // disable JTAG to get pins back
-
     DDPCONbits.JTAGEN = 0;
-
-
-
     // do your TRIS and LAT commands here
-
-// tris is i/o
-            //lat is on off for output
-            //port is on off for input
-    TRISAbits.TRISA4 = 1;
-    TRISBbits.TRISB4 = 0;
+    // tris is i/o
+            //lat is hi-low for output
+            //port reads hi-lo for input
+    TRISAbits.TRISA4 = 0;
+    TRISBbits.TRISB4 = 1;
     LATAbits.LATA4 = 1;
-    
-    // Demonstrates spi by accessing external ram
-
-// PIC is the master, ram is the slave
-
-// Uses microchip 23K256 ram chip (see the data sheet for protocol details)
-
+  
 // SDO4 -> SI (pin F5 -> pin 5)
-    RPB2Rbits.RPB2R = 0b0100;  //SETS RPB2 (PIN 6) TO SDO2
+    RPB2Rbits.RPB2R = 0b0011;  //SETS RPB2 (PIN 6) TO SDO1
 // SDI4 -> SO (pin F4 -> pin 2)
-    SDI2Rbits.SDI2R = 0b0011; //SETS SDI2 TO RPB13 (PIN 24)
+    SDI1Rbits.SDI1R = 0b0000; //SETS SDI1 TO RPA1 (PIN 3)
 // SCK4 -> SCK (pin B14 -> pin 6)   DONE
 // SS4 -> CS (pin B8 -> pin 1)      DONE
     TRISBbits.TRISB8 = 0;      
@@ -135,7 +106,34 @@ int main() {
 // Vcc (Pin 8) -> 3.3 V             DONE   
 // Hold (pin 7) -> 3.3 V (we don't use the hold function)       DONE
 
-#define CS LATBbits.LATB8       // chip select pin
+  #define CS LATBbits.LATB8       // chip select pin
+  
+  CS = 1;
+  SPI1CON = 0;              // turn off the spi module and reset it
+  SPI1BUF;                  // clear the rx buffer by reading from it
+  SPI1BRG = 0x3;            // baud rate to 10 MHz [SPI4BRG = (80000000/(2*desired))-1]
+  SPI1STATbits.SPIROV = 0;  // clear the overflow bit
+  SPI1CONbits.CKE = 1;      // data changes when clock goes from hi to lo (since CKP is 0)
+  SPI1CONbits.MSTEN = 1;    // master operation
+  SPI1CONbits.ON = 1;       // turn on spi 4
+  CS = 0;                   // enable the ram
+  spi_io(0x01);             // ram write status
+  spi_io(0x41);             // sequential mode (mode = 0b01), hold disabled (hold = 0)
+  CS = 1;                   // finish the command
+  while(1) {
+
+	_CPO_SET_COUNT(0);
+
+	float f = 512 +512*sin(i*2*3.1415/1000*10);  //should make a 10Hz sin wave)
+	i++;
+	setVoltage(0,512);		//test
+
+	setVoltage(1,256);		//test
+
+	while(_CPO_GET_COUNT() < 2400000000/1000) {}  //check this is 24Million
+    ;
+    return 0;
+}
 
 //-----------------------------------------------------------------------
 unsigned char spi_io(unsigned char o) {
@@ -150,24 +148,11 @@ unsigned char spi_io(unsigned char o) {
 //-----------------------------------------------------------------------
 
 
-  TRISBbits.TRISB8 = 0;
-  CS = 1;
-  SPI2CON = 0;              // turn off the spi module and reset it
-  SPI2BUF;                  // clear the rx buffer by reading from it
-  SPI2BRG = 0x3;            // baud rate to 10 MHz [SPI4BRG = (80000000/(2*desired))-1]
-  SPI2STATbits.SPIROV = 0;  // clear the overflow bit
-  SPI2CONbits.CKE = 1;      // data changes when clock goes from hi to lo (since CKP is 0)
-  SPI2CONbits.MSTEN = 1;    // master operation
-  SPI2CONbits.ON = 1;       // turn on spi 4
-
+ 
 
 
                             // send a ram set status command.
 
-  CS = 0;                   // enable the ram
-  spi_io(0x01);             // ram write status
-  spi_io(0x41);             // sequential mode (mode = 0b01), hold disabled (hold = 0)
-  CS = 1;                   // finish the command
 
 
 // write len bytes to the ram, starting at the address addr
@@ -176,33 +161,7 @@ unsigned char spi_io(unsigned char o) {
 
 
 
-  while(1) {
 
-	_CPO_SET_COUNT(0);
-
-	float f = 512 +512*sin(i*2*3.1415/1000*10);  //should make a 10Hz sin wave)
-
-	i++;
-
-
-
-
-
-
-
-	setVoltage(0,512);		//test
-
-	setVoltage(1,256);		//test
-
-
-
-	while(_CPO_GET_COUNT() < 2400000000/1000) {}  //check this is 24Million
-
-    ;
-
-  
-
-  return 0;
 
 }
 

@@ -62,7 +62,7 @@
 
 // DEVCFG3
 
-#pragma config USERID = 00000013 // some 16bit userid, doesn't matter what
+#pragma config USERID = 0b0000000000000011 // some 16bit userid, doesn't matter what
 
 #pragma config PMDL1WAY = OFF // allow multiple reconfigurations
 
@@ -113,8 +113,8 @@ int main() {
 // tris is i/o
             //lat is on off for output
             //port is on off for input
-    TRISAbits.TRISA4 = 1;
-    TRISBbits.TRISB4 = 0;
+    TRISAbits.TRISA4 = 0;
+    TRISBbits.TRISB4 = 1;
     LATAbits.LATA4 = 1;
     
     
@@ -126,10 +126,10 @@ int main() {
     while(1) {
         
          
-            while (_CP0_GET_COUNT() <= 24000){ // flip twice every 1/1000 of a sec
+            while (_CP0_GET_COUNT() <= 12000){ // flip twice every 1/1000 of a sec
             }
             if (PORTBbits.RB4 == 1){//high
-                LATAINV = 0x8;
+                LATAINV = 0x16;
                 _CP0_SET_COUNT(0);
             }
         
