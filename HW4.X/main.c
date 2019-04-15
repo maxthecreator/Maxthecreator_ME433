@@ -124,15 +124,14 @@ int main() {
 // Uses microchip 23K256 ram chip (see the data sheet for protocol details)
 
 // SDO4 -> SI (pin F5 -> pin 5)
-    RPB2Rbits.RPB2R = 0b0100  //SETS RPB2 (PIN 6) TO SDO2
+    RPB2Rbits.RPB2R = 0b0100;  //SETS RPB2 (PIN 6) TO SDO2
 // SDI4 -> SO (pin F4 -> pin 2)
-    SDI2Rbits.SDI2R = 0b0011 //SETS SDI2 TO RPB13 (PIN 24)
+    SDI2Rbits.SDI2R = 0b0011; //SETS SDI2 TO RPB13 (PIN 24)
     
 // SCK4 -> SCK (pin B14 -> pin 6)   DONE
 
 // SS4 -> CS (pin B8 -> pin 1)      DONE
-            TRISBbits.TRISB8 = 0
-            CS = 1
+            TRISBbits.TRISB8 = 0;
             
 // Additional SRAM connections
 
@@ -146,25 +145,20 @@ int main() {
 
 // Only uses the SRAM's sequential mode
 
-//
-
 #define CS LATBbits.LATB8       // chip select pin
 
 
-
-// send a byte via spi and return the response
-
 unsigned char spi_io(unsigned char o) {
 
-  SPI1BUF = o;
+  SPI2BUF = o;
 
-  while(!SPI1STATbits.SPIRBF) { // wait to receive the byte
+  while(!SPI2STATbits.SPIRBF) { // wait to receive the byte
 
     ;
 
   }
 
-  return SPI4BUF;
+  return SPI2BUF;
 
 }
 
@@ -176,19 +170,19 @@ unsigned char spi_io(unsigned char o) {
   CS = 1;
 
 
-  SPI1CON = 0;              // turn off the spi module and reset it
+  SPI2CON = 0;              // turn off the spi module and reset it
 
-  SPI1BUF;                  // clear the rx buffer by reading from it
+  SPI2BUF;                  // clear the rx buffer by reading from it
 
-  SPI1BRG = 0x3;            // baud rate to 10 MHz [SPI4BRG = (80000000/(2*desired))-1]
+  SPI2BRG = 0x3;            // baud rate to 10 MHz [SPI4BRG = (80000000/(2*desired))-1]
 
-  SPI1STATbits.SPIROV = 0;  // clear the overflow bit
+  SPI2STATbits.SPIROV = 0;  // clear the overflow bit
 
-  SPI1CONbits.CKE = 1;      // data changes when clock goes from hi to lo (since CKP is 0)
+  SPI2CONbits.CKE = 1;      // data changes when clock goes from hi to lo (since CKP is 0)
 
-  SPI1CONbits.MSTEN = 1;    // master operation
+  SPI2CONbits.MSTEN = 1;    // master operation
 
-  SPI1CONbits.ON = 1;       // turn on spi 4
+  SPI2CONbits.ON = 1;       // turn on spi 4
 
 
 
@@ -283,30 +277,28 @@ void ram_read(unsigned short addr, char data[], int len) {
 
     ;
 
-  }
+  
 
   return 0;
 
 }
 
 
-
-
-
-/*
-
 void setVoltage(char a, int v) {
 
 
 
-	unsigned short t = 0;
+	unsigned short t1 = 0;
+    unsigned short t2 = 0;
+   
 
-	t= a << 15; //a is at the very end of the data transfer
+	t1 = a << 15; //a is at the very end of the data transfer
 
-	t = t | 0b01110000000000000;
+	t1 = t1 | 0b01110000;
 
-	t = t | ((v&0b1111111111) <<2); //rejecting excessive bits (above 10)
+	t1 = t1 | ((v&0b111111111111) >> 8); //rejecting excessive bits (above 10)
 
+    t2 = v & 0b000011111111;
 	
 
 	CS = 0;
@@ -319,7 +311,6 @@ void setVoltage(char a, int v) {
 
 }
     
-    */
     
     __builtin_enable_interrupts();
 
@@ -341,4 +332,3 @@ void setVoltage(char a, int v) {
 
     }
 */
-}
