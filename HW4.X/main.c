@@ -296,14 +296,14 @@ void setVoltage(char a, int v) {
 
 	t1 = t1 | 0b01110000;
 
-	t1 = t1 | ((v&0b111111111111) >> 8); //rejecting excessive bits (above 10)
+	t1 = t1 | ((v&0b111111111111) >> 8); //rejecting excessive bits (above 12)
 
-    t2 = v & 0b000011111111;
+    t2 = v & 0b0000000011111111;
 	
 
 	CS = 0;
 
-	spi_io(t>>8);
+	spi_io(t1);
 
 	spi_
 
