@@ -127,61 +127,37 @@ int main() {
     RPB2Rbits.RPB2R = 0b0100;  //SETS RPB2 (PIN 6) TO SDO2
 // SDI4 -> SO (pin F4 -> pin 2)
     SDI2Rbits.SDI2R = 0b0011; //SETS SDI2 TO RPB13 (PIN 24)
-    
 // SCK4 -> SCK (pin B14 -> pin 6)   DONE
-
 // SS4 -> CS (pin B8 -> pin 1)      DONE
-            TRISBbits.TRISB8 = 0;
-            
+    TRISBbits.TRISB8 = 0;      
 // Additional SRAM connections
-
 // Vss (Pin 4) -> ground            DONE
-
 // Vcc (Pin 8) -> 3.3 V             DONE   
-
 // Hold (pin 7) -> 3.3 V (we don't use the hold function)       DONE
-
-// 
-
-// Only uses the SRAM's sequential mode
 
 #define CS LATBbits.LATB8       // chip select pin
 
-
+//-----------------------------------------------------------------------
 unsigned char spi_io(unsigned char o) {
 
   SPI2BUF = o;
 
   while(!SPI2STATbits.SPIRBF) { // wait to receive the byte
-
     ;
-
   }
-
   return SPI2BUF;
-
 }
-
-
+//-----------------------------------------------------------------------
 
 
   TRISBbits.TRISB8 = 0;
-
   CS = 1;
-
-
   SPI2CON = 0;              // turn off the spi module and reset it
-
   SPI2BUF;                  // clear the rx buffer by reading from it
-
   SPI2BRG = 0x3;            // baud rate to 10 MHz [SPI4BRG = (80000000/(2*desired))-1]
-
   SPI2STATbits.SPIROV = 0;  // clear the overflow bit
-
   SPI2CONbits.CKE = 1;      // data changes when clock goes from hi to lo (since CKP is 0)
-
   SPI2CONbits.MSTEN = 1;    // master operation
-
   SPI2CONbits.ON = 1;       // turn on spi 4
 
 
@@ -189,66 +165,13 @@ unsigned char spi_io(unsigned char o) {
                             // send a ram set status command.
 
   CS = 0;                   // enable the ram
-
   spi_io(0x01);             // ram write status
-
   spi_io(0x41);             // sequential mode (mode = 0b01), hold disabled (hold = 0)
-
   CS = 1;                   // finish the command
-
-}
-
 
 
 // write len bytes to the ram, starting at the address addr
 
-void ram_write(unsigned short addr, const char data[], int len) {
-
-  int i = 0;
-
-  CS = 0;                        // enable the ram by lowering the chip select line
-
-  spi_io(0x2);                   // sequential write operation
-
-  spi_io((addr & 0xFF00) >> 8 ); // most significant byte of address
-
-  spi_io(addr & 0x00FF);         // the least significant address byte
-
-  for(i = 0; i < len; ++i) {
-
-    spi_io(data[i]);
-
-  }
-
-  CS = 1;                        // raise the chip select line, ending communication
-
-}
-
-
-
-// read len bytes from ram, starting at the address addr
-
-void ram_read(unsigned short addr, char data[], int len) {
-
-  int i = 0;
-
-  CS = 0;
-
-  spi_io(0x3);                   // ram read operation
-
-  spi_io((addr & 0xFF00) >> 8);  // most significant address byte
-
-  spi_io(addr & 0x00FF);         // least significant address byte
-
-  for(i = 0; i < len; ++i) {
-
-    data[i] = spi_io(0);         // read in the data
-
-  }
-
-  CS = 1;
-
-}
 	init_spi();
 
 
