@@ -1,6 +1,5 @@
 #include<xc.h>           // processor SFR definitions
 #include<sys/attribs.h>  // __ISR macro
-#include "NU32.h"       // constants, funcs for startup and UART
 #include <math.h> 
 
 
@@ -62,7 +61,7 @@
 
 // DEVCFG3
 
-#pragma config USERID = 0b0000000000000013 // some 16bit userid, doesn't matter what
+#pragma config USERID = 0x0013 // some 16bit userid, doesn't matter what
 
 #pragma config PMDL1WAY = OFF // allow multiple reconfigurations
 
@@ -100,7 +99,7 @@ int main() {
  init_spi1();
   while(1) {
 
-	_CPO_SET_COUNT(0);
+	_CP0_SET_COUNT(0);
 
 	//float f = 512 +512*sin(i*2*3.1415/1000*10);  //should make a 10Hz sin wave)
 	//i++;
@@ -108,7 +107,7 @@ int main() {
 
 	setVoltage(1,256);		//test
 
-	while(_CPO_GET_COUNT() < 2400000000/1000) {}  //check this is 24Million
+	while(_CP0_GET_COUNT() < 2400000000/1000) {}  //check this is 24Million
     ;
     return 0;
 }
