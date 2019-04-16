@@ -94,19 +94,51 @@ int main() {
     TRISBbits.TRISB4 = 1;
     LATAbits.LATA4 = 1;
   
-// SDO4 -> SI (pin F5 -> pin 5)
+    
+ __builtin_enable_interrupts();
+
+ init_spi1();
+  while(1) {
+
+	_CPO_SET_COUNT(0);
+
+	//float f = 512 +512*sin(i*2*3.1415/1000*10);  //should make a 10Hz sin wave)
+	//i++;
+	setVoltage(0,512);		//test
+
+	setVoltage(1,256);		//test
+
+	while(_CPO_GET_COUNT() < 2400000000/1000) {}  //check this is 24Million
+    ;
+    return 0;
+}
+}
+//-----------------------------------------------------------------------
+unsigned char spi1_io(unsigned char o) {
+
+  SPI1BUF = o;
+
+  while(!SPI1STATbits.SPIRBF) { // wait to receive the byte
+    ;
+  }
+  return SPI1BUF;
+}
+//-----------------------------------------------------------------------
+
+void init_spi1(){
+    
+#define CS LATBbits.LATB8       // chip select pin
+  // SDO1 -> SI (pin F5 -> pin 5)
     RPB2Rbits.RPB2R = 0b0011;  //SETS RPB2 (PIN 6) TO SDO1
-// SDI4 -> SO (pin F4 -> pin 2)
+// SDI1 -> SO (pin F4 -> pin 2)
     SDI1Rbits.SDI1R = 0b0000; //SETS SDI1 TO RPA1 (PIN 3)
-// SCK4 -> SCK (pin B14 -> pin 6)   DONE
-// SS4 -> CS (pin B8 -> pin 1)      DONE
+// SCK1 -> SCK (pin B14 -> pin 6)   DONE
+// SS1 -> CS (pin B8 -> pin 1)      DONE
     TRISBbits.TRISB8 = 0;      
 // Additional SRAM connections
 // Vss (Pin 4) -> ground            DONE
 // Vcc (Pin 8) -> 3.3 V             DONE   
 // Hold (pin 7) -> 3.3 V (we don't use the hold function)       DONE
-
-  #define CS LATBbits.LATB8       // chip select pin
   
   CS = 1;
   SPI1CON = 0;              // turn off the spi module and reset it
@@ -116,55 +148,9 @@ int main() {
   SPI1CONbits.CKE = 1;      // data changes when clock goes from hi to lo (since CKP is 0)
   SPI1CONbits.MSTEN = 1;    // master operation
   SPI1CONbits.ON = 1;       // turn on spi 4
-  CS = 0;                   // enable the ram
-  spi_io(0x01);             // ram write status
-  spi_io(0x41);             // sequential mode (mode = 0b01), hold disabled (hold = 0)
-  CS = 1;                   // finish the command
-  while(1) {
-
-	_CPO_SET_COUNT(0);
-
-	float f = 512 +512*sin(i*2*3.1415/1000*10);  //should make a 10Hz sin wave)
-	i++;
-	setVoltage(0,512);		//test
-
-	setVoltage(1,256);		//test
-
-	while(_CPO_GET_COUNT() < 2400000000/1000) {}  //check this is 24Million
-    ;
-    return 0;
 }
 
 //-----------------------------------------------------------------------
-unsigned char spi_io(unsigned char o) {
-
-  SPI2BUF = o;
-
-  while(!SPI2STATbits.SPIRBF) { // wait to receive the byte
-    ;
-  }
-  return SPI2BUF;
-}
-//-----------------------------------------------------------------------
-
-
- 
-
-
-                            // send a ram set status command.
-
-
-
-// write len bytes to the ram, starting at the address addr
-
-	init_spi();
-
-
-
-
-
-}
-
 
 void setVoltage(char a, int v) {
 
@@ -174,43 +160,20 @@ void setVoltage(char a, int v) {
     unsigned short t2 = 0;
    
 
-	t1 = a << 15; //a is at the very end of the data transfer
+	t1 = a << 7; //a is at the very end of the data transfer
 
 	t1 = t1 | 0b01110000;
 
 	t1 = t1 | ((v&0b111111111111) >> 8); //rejecting excessive bits (above 12)
 
-    t2 = v & 0b0000000011111111;
+    t2 = v & 0b11111111;
 	
 
 	CS = 0;
 
-	spi_io(t1);
-
-	spi_
-
-	
-
+	spi1_io(t1);
+    spi1_io(t2);
+    
+    CS = 1;
 }
-    
-    
-    __builtin_enable_interrupts();
 
-   // a4 led 
-   // b4 pushbutton
-/*
-    while(1) {
-        
-         
-            while (_CP0_GET_COUNT() <= 24000){ // flip twice every 1/1000 of a sec
-            }
-            if (PORTBbits.RB4 == 1){//high
-                LATAINV = 0x8;
-                _CP0_SET_COUNT(0);
-            }
-        
-
-	// remember the core timer runs at half the sysclk
-
-    }
-*/
