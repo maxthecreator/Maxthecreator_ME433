@@ -97,15 +97,32 @@ int main() {
  __builtin_enable_interrupts();
 
  init_spi1();
+ float i = 0;
+ char dir = 1;
   while(1) {
 
 	_CP0_SET_COUNT(0);
 
-	//float f = 512 +512*sin(i*2*3.1415/1000*10);  //should make a 10Hz sin wave)
-	//i++;
-	setVoltage(0,512);		//test
+	float f = 2048 + 2048*sin(i*2*3.1415/1000*10);  //should make a 10Hz sin wave)
+	
+    float g = 40.96*i;
+    
+    if (i = 100){
+        dir = 0;
+    }
+    if (i = 0){
+        dir = 1;
+    }
+    if (dir = 0){
+        i--;
+    }
+    if (dir = 1){
+        i++;
+    }
+    
+	setVoltage(0,f);		//test
 
-	setVoltage(1,256);		//test
+	setVoltage(1,g);		//test
 
 	while(_CP0_GET_COUNT() < 2400000000/1000) {}  //check this is 24Million
     ;
