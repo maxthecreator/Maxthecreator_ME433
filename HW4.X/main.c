@@ -223,7 +223,7 @@ int main() {
 
 	_CP0_SET_COUNT(0);
 
-	float f = 2048 + 2048*sin(j*2*3.1415/1000*10);  //should make a 10Hz sin wave)
+/*	float f = 2048 + 2048*sin(j*2*3.1415/1000*10);  //should make a 10Hz sin wave)
 	
     float g = 40.95*i;
     
@@ -244,7 +244,10 @@ int main() {
 	setVoltage(0,f);		//test
 
 	setVoltage(1,g);		//test
-
+*/
+    setVoltage(0, 4095);
+    setVoltage(1, i);
+    i++;
 	while(_CP0_GET_COUNT() < 24000000/1000) {}  //check this is 24Million
     ;
  
