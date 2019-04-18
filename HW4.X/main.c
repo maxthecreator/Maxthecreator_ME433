@@ -217,37 +217,39 @@ int main() {
   */
  
  int j = 0;
- float i = 0;
+ int i = 0;
  char dir = 1;
   while(1) {
 
 	_CP0_SET_COUNT(0);
 
-/*	float f = 2048 + 2048*sin(j*2*3.1415/1000*10);  //should make a 10Hz sin wave)
+	int f = 2048 + 2048*sin(j*2*3.1415/1000*10);  //should make a 10Hz sin wave)
 	
-    float g = 40.95*i;
+    int g = 40.95*i;
     
-    if (i = 100){
+    if (i == 100){
         dir = 0;
     }
-    if (i = 0){
+    if (i == 0){
         dir = 1;
     }
-    if (dir = 0){
-        i--;
-    }
-    if (dir = 1){
-        i++;
-    }
+    
     j++;
     
 	setVoltage(0,f);		//test
 
 	setVoltage(1,g);		//test
-*/
-    setVoltage(0, 4095);
-    setVoltage(1, i);
-    i++;
+    
+    if (dir == 0){
+        i--;
+    }
+    if (dir == 1){
+        i++;
+    }
+
+ //   setVoltage(0, 4095);
+  //  setVoltage(1, 2048);
+ //   i++;
 	while(_CP0_GET_COUNT() < 24000000/1000) {}  //check this is 24Million
     ;
  
@@ -284,7 +286,7 @@ void init_spi1(){
   CS = 1;
   SPI1CON = 0;              // turn off the spi module and reset it
   SPI1BUF;                  // clear the rx buffer by reading from it
-  SPI1BRG = 0x3;            // baud rate to 10 MHz [SPI4BRG = (80000000/(2*desired))-1]
+  SPI1BRG = 0x1;            // baud rate to 10 MHz [SPI4BRG = (80000000/(2*desired))-1]
   SPI1STATbits.SPIROV = 0;  // clear the overflow bit
   SPI1CONbits.CKE = 1;      // data changes when clock goes from hi to lo (since CKP is 0)
   SPI1CONbits.MSTEN = 1;    // master operation
