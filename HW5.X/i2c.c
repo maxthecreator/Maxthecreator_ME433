@@ -1,8 +1,9 @@
+#include "i2c.h"
 // I2C pins need pull-up resistors, 2k-10k
 
 void i2c_master_setup(void) {
 
-  I2C2BRG = some number for 100kHz;            // I2CBRG = [1/(2*Fsck) - PGD]*Pblck - 2 
+  I2C2BRG = 0x035;            // I2CBRG = [1/(2*Fsck) - PGD]*Pblck - 2 
   ANSELBbits.ANSB2 = 0;
   ANSELBbits.ANSB3 = 0;
                                     // look up PGD for your PIC32
