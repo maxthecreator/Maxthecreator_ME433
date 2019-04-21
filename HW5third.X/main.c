@@ -74,11 +74,11 @@ int main() {
  }
  
  
- if (getExpander() == 128){
-     setExpander(0, 0);
+ if (getExpander() == 0){
+     setExpander(0, 1);
  }
  else{
-     setExpander(0,1);
+     setExpander(0,0);
  }
  
  
