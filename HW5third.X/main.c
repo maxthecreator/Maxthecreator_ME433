@@ -37,6 +37,10 @@
 #pragma config FUSBIDIO = ON // USB pins controlled by USB module
 #pragma config FVBUSONIO = ON // USB BUSON controlled by USB module
 
+void initExpander(void);
+void setExpander(char pin, char level);
+unsigned char getExpander(void);
+
 
 int main() {
     __builtin_disable_interrupts();
@@ -64,16 +68,21 @@ int main() {
  
  while(1){
     
- while (_CP0_GET_COUNT() <= 12000000){ // flip twice every 1/1000 of a sec
-            }
- LATAINV = 0x16;
- 
- if (getExpander() == 128){
-     setExpander(0, 1);
+ if (_CP0_GET_COUNT() > 12000000){ // flip twice every 1/1000 of a sec
+ LATAINV = 0x16;  
+ _CP0_SET_COUNT(0);
  }
  
  
- _CP0_SET_COUNT(0);
+ if (getExpander() == 128){
+     setExpander(0, 0);
+ }
+ else{
+     setExpander(0,1);
+ }
+ 
+ 
+ 
  
 
 }
