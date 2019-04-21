@@ -153,7 +153,7 @@ void i2c_master_stop(void) {          // send a STOP:
 
 }
 
-void initExpander(){
+void initExpander(void){
     i2c_master_setup();
     i2c_master_start();
     i2c_master_send(0x44);
@@ -170,7 +170,7 @@ void setExpander(char pin, char level){
     i2c_master_stop();
 }
         
-unsigned char getExpander(){
+unsigned char getExpander(void){
     i2c_master_start();
     i2c_master_send(0x44); //chip address for write is 01000100
     i2c_master_send(0x09); //select gpio
