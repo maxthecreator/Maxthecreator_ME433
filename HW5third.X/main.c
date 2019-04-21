@@ -55,21 +55,27 @@ int main() {
     TRISAbits.TRISA4 = 0;
     TRISBbits.TRISB4 = 1;
     LATAbits.LATA4 = 1;
-  
+   
+    
     
  __builtin_enable_interrupts();
+ 
+ initExpander();
+ 
  while(1){
+    
  while (_CP0_GET_COUNT() <= 12000000){ // flip twice every 1/1000 of a sec
             }
  LATAINV = 0x16;
  
+ if (getExpander() == 128){
+     setExpander(0, 1);
+ }
+ 
  
  _CP0_SET_COUNT(0);
  
- 
- 
- 
- 
+
 }
 }
 
@@ -145,4 +151,33 @@ void i2c_master_stop(void) {          // send a STOP:
 
   while(I2C2CONbits.PEN) { ; }        // wait for STOP to complete
 
+}
+
+void initExpander(){
+    i2c_master_setup();
+    i2c_master_start();
+    i2c_master_send(0x44);
+    i2c_master_send(0x00);//iodir
+    i2c_master_send(0xf0);//gp0-3 are outputs, 4-7 are inputs
+    i2c_master_stop();
+}
+
+void setExpander(char pin, char level){
+    i2c_master_start();
+    i2c_master_send(0x44); //chip address for write is 01000100
+    i2c_master_send(0x09); //select gpio
+    i2c_master_send(level << pin); //turn pin high
+    i2c_master_stop();
+}
+        
+unsigned char getExpander(){
+    i2c_master_start();
+    i2c_master_send(0x44); //chip address for write is 01000100
+    i2c_master_send(0x09); //select gpio
+    i2c_master_restart();
+    i2c_master_send(0x45); //chip address for read is 01000101
+    unsigned char r = i2c_master_recv();
+    i2c_master_ack(1);
+    i2c_master_stop();
+    return r;
 }
