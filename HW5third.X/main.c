@@ -74,7 +74,7 @@ int main() {
  }
  
  
- if (getExpander() == 0){
+ if (getExpander() == 0){ //128 would be hi
      setExpander(0, 1);
  }
  else{
