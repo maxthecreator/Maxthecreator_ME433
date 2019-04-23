@@ -2,6 +2,7 @@
 #include<sys/attribs.h>  // __ISR macro
 #include <math.h> 
 #include "ili.h"
+#include <stdio.h>
 
 // DEVCFG0
 #pragma config DEBUG = OFF // no debugging
@@ -50,15 +51,39 @@ int main() {
     // disable JTAG to get pins back
     DDPCONbits.JTAGEN = 0;
     
+    TRISAbits.TRISA4 = 0;
+    TRISBbits.TRISB4 = 1;
+    LATAbits.LATA4 = 1;
     
     __builtin_enable_interrupts();
+      SPI1_init();
+    LCD_init();
+  
     
-    char message[10];
-    sprintf(message, "hello");
+    LCD_clearScreen(ILI9341_PURPLE);
+            
+            
+    LCD_drawLetter('H', 10, 10, ILI9341_WHITE, ILI9341_PURPLE);    
+
+    LCD_drawLetter('e', 15, 10, ILI9341_WHITE, ILI9341_PURPLE);  
+       
+    LCD_drawLetter('l', 20, 10, ILI9341_WHITE, ILI9341_PURPLE);  
+    LCD_drawLetter('l', 25, 10, ILI9341_WHITE, ILI9341_PURPLE);  
+    LCD_drawLetter('o', 30, 10, ILI9341_WHITE, ILI9341_PURPLE);  
+    
+    
+    char message[20];
     int i;
-    for (i=0, i<10, i++){
-        while (message[i]){
-            LCD_drawLetter(message[i], 10, 10, TODO:COLORS)
+    while(1){
+        for (i=1; i<101; i++){
+            sprintf(message, "hello world %d", i);
+            LCD_drawString(message, 28, 32, ILI9341_WHITE, ILI9341_PURPLE);
+            LCD_drawBar(10, 50, 100, i, ILI9341_BLACK, ILI9341_WHITE);
+    
+            _CP0_SET_COUNT(0);
+            while (_CP0_GET_COUNT() <= 2400){ // flip twice every 1/1000 of a sec
+                }
+            
         }
     }
 }

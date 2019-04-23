@@ -420,4 +420,6 @@ void LCD_drawLetter(char letter, unsigned short x, unsigned short y, unsigned sh
 
 void LCD_drawBar(unsigned short x, unsigned short y, unsigned short length, unsigned short percent, unsigned short barcolor, unsigned short bckcolor);
 
+void LCD_drawString(char* message, unsigned short x, unsigned short y, unsigned short lettercolor, unsigned short bckcolor);
+
 #endif

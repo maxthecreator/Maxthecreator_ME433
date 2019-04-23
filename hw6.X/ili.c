@@ -542,13 +542,23 @@ void LCD_drawLetter(char letter, unsigned short x, unsigned short y, unsigned sh
 void LCD_drawBar(unsigned short x, unsigned short y, unsigned short length, unsigned short percent, unsigned short barcolor, unsigned short bckcolor){
     int i, j;
     for (i = 0; i< length; i++){
-        for (j=0, j<8, j++){
+        for (j=0; j<8; j++){
             if (i<(length*percent/100)){
                 LCD_drawPixel(x+i, y+j, barcolor);
             }
             else{
-                LCD_drawPixel(x+i, j+j, bckcolor);
+                LCD_drawPixel(x+i, y+j, bckcolor);
             }
         }
+    }
+}
+
+void LCD_drawString(char* message, unsigned short x, unsigned short y, unsigned short lettercolor, unsigned short bckcolor){
+        
+    int i;
+    i = 0;
+    while (message[i]){
+        LCD_drawLetter(message[i], x+5*i, y, lettercolor, bckcolor);
+        i++;
     }
 }
