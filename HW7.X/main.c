@@ -70,12 +70,17 @@ int main() {
   
     
     LCD_clearScreen(ILI9341_PURPLE);
- imusetup();
+    
+    imusetup();
  
  
  char xaccmessage[20];
  char yaccmessage[20];
- 
+ char zaccmessage[20];
+ char xrotmessage[20];
+ char yrotmessage[20];
+ char zrotmessage[20];
+
  
  char c;
  
@@ -99,11 +104,19 @@ int main() {
     yacc = (array[11] << 8) | array[10];
     zacc = (array[13] << 8) | array[12];
  
-    sprintf(xaccmessage, "Xacc is:%4.2s  ", xacc);
-    sprintf(yaccmessage, "Yacc is:%4.2s  ", yacc);
+    sprintf(xaccmessage, "Xacc is:%d  ", xacc);
+    sprintf(yaccmessage, "Yacc is:%d  ", yacc);
+    sprintf(yaccmessage, "Zacc is:%d  ", zacc);
+    sprintf(yaccmessage, "Xrot is:%d  ", xrot);
+    sprintf(yaccmessage, "Yrot is:%d  ", yrot);
+    sprintf(yaccmessage, "Zrot is:%d  ", zrot);
     
     LCD_drawString(xaccmessage, 30, 30, ILI9341_WHITE, ILI9341_PURPLE);
     LCD_drawString(yaccmessage, 30, 50, ILI9341_WHITE, ILI9341_PURPLE);
+    LCD_drawString(zaccmessage, 30, 70, ILI9341_WHITE, ILI9341_PURPLE);
+    LCD_drawString(xrotmessage, 30, 90, ILI9341_WHITE, ILI9341_PURPLE);
+    LCD_drawString(yrotmessage, 30, 110, ILI9341_WHITE, ILI9341_PURPLE);
+    LCD_drawString(zrotmessage, 30, 130, ILI9341_WHITE, ILI9341_PURPLE);
     
  
     while (_CP0_GET_COUNT() <= 1200000) {
@@ -111,4 +124,5 @@ int main() {
     _CP0_SET_COUNT(0);
  
     }
+   
 }
