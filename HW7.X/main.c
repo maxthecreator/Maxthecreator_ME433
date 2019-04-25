@@ -1,9 +1,10 @@
 #include<xc.h>           // processor SFR definitions
 #include<sys/attribs.h>  // __ISR macro
 #include <math.h> 
-#include "imu.H"
-#include "ili.h"
 #include<stdio.h>
+#include "imu.H"
+#include "ili2.h"
+
 
 
 // DEVCFG0
