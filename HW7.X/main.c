@@ -2,6 +2,8 @@
 #include<sys/attribs.h>  // __ISR macro
 #include <math.h> 
 #include "imu.H"
+#include "ili.h"
+#include<stdio.h>
 
 
 // DEVCFG0
@@ -62,34 +64,47 @@ int main() {
     
  __builtin_enable_interrupts();
  
+   SPI1_init();
+    LCD_init();
+  
+    
+    LCD_clearScreen(ILI9341_PURPLE);
  imusetup();
+ 
+ 
+ char xaccmessage[20];
+ char yaccmessage[20];
+ 
+ 
  char c;
  
  int arlength = 14;
  unsigned char array[14];
- 
- 
- I2C_read_multiple(imuadd, readreg, array, arlength);
- 
- short xacc, yacc, zacc, temp, xrot, yrot, zrot;
- temp = (array[1] << 8) | array[0];
- xacc = (array[3] << 8) | array[2];
- yacc = (array[0] << 8) | array[1];
- zacc = (array[0] << 8) | array[1];
- xrot = (array[0] << 8) | array[1];
- yrot = (array[0] << 8) | array[1];
- zrot = (array[0] << 8) | array[1];
- 
- 
- 
-         
-         
          
  while(1){
     c = whoami();
     if (c == 0x69){
          LATAINV = 0x16;
     }
+    
+    I2C_read_multiple(imuadd, readreg, array, arlength);
+ 
+    short xacc, yacc, zacc, temp, xrot, yrot, zrot;
+    temp = (array[1] << 8) | array[0];
+    xrot = (array[3] << 8) | array[2];
+    yrot = (array[5] << 8) | array[4];
+    zrot = (array[7] << 8) | array[6];
+    xacc = (array[9] << 8) | array[8];
+    yacc = (array[11] << 8) | array[10];
+    zacc = (array[13] << 8) | array[12];
+ 
+    sprintf(xaccmessage, "Xacc is:%4.2s  ", xacc);
+    sprintf(yaccmessage, "Yacc is:%4.2s  ", yacc);
+    
+    LCD_drawString(xaccmessage, 30, 30, ILI9341_WHITE, ILI9341_PURPLE);
+    LCD_drawString(yaccmessage, 30, 50, ILI9341_WHITE, ILI9341_PURPLE);
+    
+ 
     while (_CP0_GET_COUNT() <= 1200000) {
     }
     _CP0_SET_COUNT(0);
