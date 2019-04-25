@@ -64,6 +64,15 @@ int main() {
  
  imusetup();
  char c;
+ 
+ int arlength = 14;
+ unsigned char array[14];
+ 
+ 
+ I2C_read_multiple(imuadd, readreg, array, arlength);
+         
+         
+         
  while(1){
     c = whoami();
     if (c == 0x69){

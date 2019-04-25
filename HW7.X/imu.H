@@ -7,6 +7,8 @@
 #define ctrl1_xl 0x10
 #define ctrl2_g 0x11
 #define ctrl3_c 0x12
+#define imuadd 0x6b
+#define readreg 0x20
 
 
 void i2c_master_setup(void) ;
