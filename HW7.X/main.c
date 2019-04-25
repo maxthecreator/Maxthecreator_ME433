@@ -70,6 +70,18 @@ int main() {
  
  
  I2C_read_multiple(imuadd, readreg, array, arlength);
+ 
+ short xacc, yacc, zacc, temp, xrot, yrot, zrot;
+ temp = (array[1] << 8) | array[0];
+ xacc = (array[3] << 8) | array[2];
+ yacc = (array[0] << 8) | array[1];
+ zacc = (array[0] << 8) | array[1];
+ xrot = (array[0] << 8) | array[1];
+ yrot = (array[0] << 8) | array[1];
+ zrot = (array[0] << 8) | array[1];
+ 
+ 
+ 
          
          
          
