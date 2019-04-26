@@ -86,6 +86,7 @@ int main() {
  
  int arlength = 14;
  unsigned char array[14];
+ unsigned short percent1, percent2, percent3, percent4;
          
  while(1){
     c = whoami();
@@ -106,10 +107,10 @@ int main() {
  
     sprintf(xaccmessage, "Xacc is:%d  ", xacc);
     sprintf(yaccmessage, "Yacc is:%d  ", yacc);
-    sprintf(yaccmessage, "Zacc is:%d  ", zacc);
-    sprintf(yaccmessage, "Xrot is:%d  ", xrot);
-    sprintf(yaccmessage, "Yrot is:%d  ", yrot);
-    sprintf(yaccmessage, "Zrot is:%d  ", zrot);
+    sprintf(zaccmessage, "Zacc is:%d  ", zacc);
+    sprintf(xrotmessage, "Xrot is:%d  ", xrot);
+    sprintf(yrotmessage, "Yrot is:%d  ", yrot);
+    sprintf(zrotmessage, "Zrot is:%d  ", zrot);
     
     LCD_drawString(xaccmessage, 30, 30, ILI9341_WHITE, ILI9341_PURPLE);
     LCD_drawString(yaccmessage, 30, 50, ILI9341_WHITE, ILI9341_PURPLE);
@@ -118,7 +119,30 @@ int main() {
     LCD_drawString(yrotmessage, 30, 110, ILI9341_WHITE, ILI9341_PURPLE);
     LCD_drawString(zrotmessage, 30, 130, ILI9341_WHITE, ILI9341_PURPLE);
     
- 
+    percent1 = 0;
+    percent2 = 0;
+    percent3 = 0;
+    percent4 = 0;
+    
+    if (xacc>0){
+        percent1 = xacc/160;
+    }
+    else{
+        percent2 = -xacc/160;
+    }
+    if (yacc>0){
+        percent3 = yacc/160;
+    }
+    else{
+        percent4 = -yacc/160;
+    }
+    
+      
+        LCD_drawBar(110, 160, 80, percent1, ILI9341_BLACK, ILI9341_WHITE);
+       // LCD_drawBarLeft(102, 160, 80, percent2, ILI9341_BLACK, ILI9341_WHITE);
+       // LCD_drawBarUp()
+        
+    
     while (_CP0_GET_COUNT() <= 1200000) {
     }
     _CP0_SET_COUNT(0);
