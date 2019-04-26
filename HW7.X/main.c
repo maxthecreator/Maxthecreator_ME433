@@ -139,10 +139,10 @@ int main() {
     
       
         LCD_drawBar(110, 160, 80, percent2, ILI9341_BLACK, ILI9341_WHITE);
-        LCD_drawBarLeft(102, 160, 80, percent1, ILI9341_BLACK, ILI9341_WHITE);
-        LCD_drawBarUp(102, 160, 80, percent3, ILI9341_BLACK, ILI9341_WHITE);
+        LCD_drawBarLeft(101, 160, 80, percent1, ILI9341_BLACK, ILI9341_WHITE);
+        LCD_drawBarUp(102, 159, 80, percent3, ILI9341_BLACK, ILI9341_WHITE);
         LCD_drawBarDown(102, 168, 80, percent4, ILI9341_BLACK, ILI9341_WHITE);
-        
+        LCD_drawBar(102, 160, 8, 100, ILI9341_BLACK, ILI9341_WHITE);
     
     while (_CP0_GET_COUNT() <= 1200000) {
     }
