@@ -562,3 +562,43 @@ void LCD_drawString(char* message, unsigned short x, unsigned short y, unsigned 
         i++;
     }
 }
+void LCD_drawBarLeft(unsigned short x, unsigned short y, unsigned short length, unsigned short percent, unsigned short barcolor, unsigned short bckcolor){
+    int i, j;
+    for (i = 0; i< length; i++){
+        for (j=0; j<8; j++){
+            if (i<(length*percent/100)){
+                LCD_drawPixel(x-i, y+j, barcolor);
+            }
+            else{
+                LCD_drawPixel(x-i, y+j, bckcolor);
+            }
+        }
+    }
+}
+
+void LCD_drawBarUp(unsigned short x, unsigned short y, unsigned short length, unsigned short percent, unsigned short barcolor, unsigned short bckcolor){
+    int i, j;
+    for (i = 0; i< length; i++){
+        for (j=0; j<8; j++){
+            if (i<(length*percent/100)){
+                LCD_drawPixel(x+j, y-i, barcolor);
+            }
+            else{
+                LCD_drawPixel(x+j, y-i, bckcolor);
+            }
+        }
+    }
+}
+void LCD_drawBarDown(unsigned short x, unsigned short y, unsigned short length, unsigned short percent, unsigned short barcolor, unsigned short bckcolor){
+    int i, j;
+    for (i = 0; i< length; i++){
+        for (j=0; j<8; j++){
+            if (i<(length*percent/100)){
+                LCD_drawPixel(x+j, y+i, barcolor);
+            }
+            else{
+                LCD_drawPixel(x+j, y+i, bckcolor);
+            }
+        }
+    }
+}

@@ -422,4 +422,10 @@ void LCD_drawBar(unsigned short x, unsigned short y, unsigned short length, unsi
 
 void LCD_drawString(char* message, unsigned short x, unsigned short y, unsigned short lettercolor, unsigned short bckcolor);
 
+void LCD_drawBarLeft(unsigned short x, unsigned short y, unsigned short length, unsigned short percent, unsigned short barcolor, unsigned short bckcolor);
+
+void LCD_drawBarDown(unsigned short x, unsigned short y, unsigned short length, unsigned short percent, unsigned short barcolor, unsigned short bckcolor);
+
+void LCD_drawBarUp(unsigned short x, unsigned short y, unsigned short length, unsigned short percent, unsigned short barcolor, unsigned short bckcolor);
+
 #endif
