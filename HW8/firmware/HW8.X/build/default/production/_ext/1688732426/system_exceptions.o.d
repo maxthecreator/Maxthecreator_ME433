@@ -120,4 +120,6 @@ build/default/production/_ext/1688732426/system_exceptions.o:  \
  ../../../../../../../../../microchip/harmony/v2_06/framework/peripheral/ports/plib_ports_compatibility.h  \
  ../src/app.h  \
 ../src/system_config/default/system_definitions.h  \
+ ../src/ili2.h  \
+../src/imu.H  \
  ../../../../../../../../../microchip/harmony/v2_06/framework/system/debug/sys_debug.h 

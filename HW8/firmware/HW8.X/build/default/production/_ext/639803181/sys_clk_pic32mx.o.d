@@ -117,4 +117,6 @@ build/default/production/_ext/639803181/sys_clk_pic32mx.o:  \
  ../../../../../../../../../microchip/harmony/v2_06/framework/peripheral/ports/processor/../templates/ports_ChangeNoticeEdgeControl_Unsupported.h  \
  ../../../../../../../../../microchip/harmony/v2_06/framework/peripheral/ports/processor/../templates/ports_ChangeNoticeEdgeStatus_Unsupported.h  \
  ../../../../../../../../../microchip/harmony/v2_06/framework/peripheral/ports/plib_ports_compatibility.h  \
- ../src/app.h 
+ ../src/app.h  \
+../src/ili2.h  \
+../src/imu.H 

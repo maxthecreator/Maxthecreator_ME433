@@ -118,4 +118,6 @@ build/default/production/_ext/1688732426/system_interrupt.o:  \
  ../../../../../../../../../microchip/harmony/v2_06/framework/peripheral/ports/processor/../templates/ports_ChangeNoticeEdgeControl_Unsupported.h  \
  ../../../../../../../../../microchip/harmony/v2_06/framework/peripheral/ports/processor/../templates/ports_ChangeNoticeEdgeStatus_Unsupported.h  \
  ../../../../../../../../../microchip/harmony/v2_06/framework/peripheral/ports/plib_ports_compatibility.h  \
+ ../src/ili2.h  \
+../src/imu.H  \
  ../src/system_config/default/system_definitions.h 
