@@ -72,16 +72,37 @@ int main() {
     LCD_clearScreen(ILI9341_PURPLE);
     
     imusetup();
- 
- 
- 
- 
     
-
+    unsigned short x, y;
+    int z;
+    unsigned short xpix, ypix;
     
-    while (_CP0_GET_COUNT() <= 1200000) {
-    }
-    _CP0_SET_COUNT(0);
+    char xmessage[20];
+    char ymessage[20];
+    char zmessage[20];
+    char xpixmessage[20];
+    char ypixmessage[20];
+    
+    while(1){
+ 
+    XPT2046_read(&x, &y, &z);
+        
+    sprintf(xmessage, "X is: %d   ", x);
+    sprintf(ymessage, "Y is: %d   ", y);
+    sprintf(zmessage, "Z is: %d   ", z);
+    
+    LCD_drawString(xmessage, 30, 30, ILI9341_WHITE, ILI9341_PURPLE);
+    LCD_drawString(ymessage, 30, 50, ILI9341_WHITE, ILI9341_PURPLE);
+    LCD_drawString(zmessage, 30, 70, ILI9341_WHITE, ILI9341_PURPLE);
+    
+    xpix = x/16;
+    ypix = (4000-y)/12.5;
+    
+    sprintf(xpixmessage, "Xpix is: %d   ", xpix);
+    sprintf(ypixmessage, "Ypix is: %d   ", ypix);
+    LCD_drawString(xpixmessage, 30, 90, ILI9341_WHITE, ILI9341_PURPLE);
+    LCD_drawString(ypixmessage, 30, 110, ILI9341_WHITE, ILI9341_PURPLE);
  
     }
+}
    

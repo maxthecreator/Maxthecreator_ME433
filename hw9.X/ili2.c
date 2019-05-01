@@ -610,24 +610,35 @@ void XPT2046_read(unsigned short *x, unsigned short *y, unsigned int *z){
  
     CS2 = 0;
     spi_io(0b10010001); //read y
-    c = spi_io(0);
-    d = spi_io(0);
+    c = spi_io(0x00);
+    d = spi_io(0x00);
     
-    *y = (c << 5) & (d >> 3);
-            
+    *y = (c << 5) | (d >> 3);
+        
+    CS2 = 1;
+    CS2 = 0;  
+    
     spi_io(0b11010001); //read x
-    c = spi_io(0);
-    d = spi_io(0);       
-    *x = (c << 5) & (d >> 3);
+    c = spi_io(0x00);
+    d = spi_io(0x00);       
+    *x = (c << 5) | (d >> 3);
+    
+    CS2 = 1;
+    CS2 = 0;  
     
     spi_io(0b10110001); //read z1
-    c = spi_io(0);
-    d = spi_io(0);       
+    c = spi_io(0x00);
+    d = spi_io(0x00);   
+
+    CS2 = 1;
+    CS2 = 0;      
    
     spi_io(0b11000001); //read z2
-    e = spi_io(0);
-    f = spi_io(0);     
+    e = spi_io(0x00);
+    f = spi_io(0x00);     
     
-    *z = ((c << 5) & (d >> 3)) - ((e << 5) & (f >> 3)) + 4095;
+    *z = ((c << 5) | (d >> 3)) - ((e << 5) | (f >> 3)) + 4095;
+    
+    CS2 = 1;
     
 }
