@@ -642,3 +642,14 @@ void XPT2046_read(unsigned short *x, unsigned short *y, unsigned int *z){
     CS2 = 1;
     
 }
+
+
+void LCD_drawButton(unsigned short x, unsigned short y, unsigned short width, unsigned short height, unsigned short barcolor){
+    int i, j;
+    for (i = 0; i< height; i++){
+        for (j=0; j<width; j++){
+            LCD_drawPixel(x+j, y+i, barcolor);
+          
+        }
+    }
+}

@@ -83,6 +83,8 @@ int main() {
     char xpixmessage[20];
     char ypixmessage[20];
     
+    LCD_drawButton() /////i am here keep working from this point
+    
     while(1){
  
     XPT2046_read(&x, &y, &z);
