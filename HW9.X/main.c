@@ -75,6 +75,8 @@ int main() {
     
     unsigned short x, y;
     int z;
+    int i = 0;
+    int press = 0;
     unsigned short xpix, ypix;
     
     char xmessage[20];
@@ -82,24 +84,52 @@ int main() {
     char zmessage[20];
     char xpixmessage[20];
     char ypixmessage[20];
+    char iplusmessage[5];
+    char iminusmessage[5];
+    char imessage[10];
+    sprintf(iplusmessage, "i++");
+    sprintf(iminusmessage, "i--");
     
-    LCD_drawButton() /////i am here keep working from this point
+    LCD_drawButton(120, 100, 90, 50, ILI9341_LIGHTGREY); /////i am here keep working from this point
+    LCD_drawButton(120, 200, 90, 50, ILI9341_LIGHTGREY);
+    
+    LCD_drawString(iplusmessage, 155, 120, ILI9341_BLACK, ILI9341_LIGHTGREY);
+    LCD_drawString(iminusmessage, 155, 220, ILI9341_BLACK, ILI9341_LIGHTGREY);
     
     while(1){
  
     XPT2046_read(&x, &y, &z);
+    xpix = x/16;
+    ypix = (4000-y)/12.5;
+    
+    if (z > 1000){
+        press = 1;
+    }
+    if (z < 1000){
+        if (press == 1){
+            if ((xpix >  120) && (xpix < 210)){
+                if ((ypix > 99) && (ypix < 151)){
+                    i++;
+                }
+                if ((ypix > 199) && (ypix < 251)){
+                    i--;
+                }
+            } 
+        }
+        press = 0;
+    }
+    
         
     sprintf(xmessage, "X is: %d   ", x);
     sprintf(ymessage, "Y is: %d   ", y);
     sprintf(zmessage, "Z is: %d   ", z);
+    sprintf(imessage, "i: %d  ", i);
     
     LCD_drawString(xmessage, 30, 30, ILI9341_WHITE, ILI9341_PURPLE);
     LCD_drawString(ymessage, 30, 50, ILI9341_WHITE, ILI9341_PURPLE);
     LCD_drawString(zmessage, 30, 70, ILI9341_WHITE, ILI9341_PURPLE);
-    
-    xpix = x/16;
-    ypix = (4000-y)/12.5;
-    
+    LCD_drawString(imessage, 125, 170, ILI9341_WHITE, ILI9341_PURPLE);
+       
     sprintf(xpixmessage, "Xpix is: %d   ", xpix);
     sprintf(ypixmessage, "Ypix is: %d   ", ypix);
     LCD_drawString(xpixmessage, 30, 90, ILI9341_WHITE, ILI9341_PURPLE);
