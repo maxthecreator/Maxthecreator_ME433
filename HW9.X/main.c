@@ -77,6 +77,7 @@ int main() {
     int z;
     int i = 0;
     int press = 0;
+    int add = 0;
     unsigned short xpix, ypix;
     
     char xmessage[20];
@@ -87,6 +88,7 @@ int main() {
     char iplusmessage[5];
     char iminusmessage[5];
     char imessage[10];
+    char pressmessage[10];
     sprintf(iplusmessage, "i++");
     sprintf(iminusmessage, "i--");
     
@@ -104,22 +106,26 @@ int main() {
     
     if (z > 1000){
         press = 1;
+        if ((xpix >  120) && (xpix < 210)){
+                if ((ypix > 99) && (ypix < 151)){
+                    add = 1;
+                }
+                if ((ypix > 199) && (ypix < 251)){
+                    add = -1;
+                } 
+            }
+            else{
+                add = 0;
+            }
     }
     if (z < 1000){
         if (press == 1){
-            if ((xpix >  120) && (xpix < 210)){
-                if ((ypix > 99) && (ypix < 151)){
-                    i++;
-                }
-                if ((ypix > 199) && (ypix < 251)){
-                    i--;
-                }
-            } 
+           i = i + add; 
         }
         press = 0;
     }
     
-        
+    sprintf(pressmessage, "Press: %d", press);   
     sprintf(xmessage, "X is: %d   ", x);
     sprintf(ymessage, "Y is: %d   ", y);
     sprintf(zmessage, "Z is: %d   ", z);
@@ -129,6 +135,8 @@ int main() {
     LCD_drawString(ymessage, 30, 50, ILI9341_WHITE, ILI9341_PURPLE);
     LCD_drawString(zmessage, 30, 70, ILI9341_WHITE, ILI9341_PURPLE);
     LCD_drawString(imessage, 125, 170, ILI9341_WHITE, ILI9341_PURPLE);
+    LCD_drawString(pressmessage, 30, 190, ILI9341_WHITE, ILI9341_PURPLE);
+
        
     sprintf(xpixmessage, "Xpix is: %d   ", xpix);
     sprintf(ypixmessage, "Ypix is: %d   ", ypix);
