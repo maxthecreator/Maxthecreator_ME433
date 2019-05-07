@@ -681,18 +681,18 @@ void APP_Initialize(void) {
 
     appData.readBuffer = &readBuffer[0];
 
+    
+    /* PUT YOUR LCD, IMU, AND PIN INITIALIZATIONS HERE */
+    
+    
+    
     SPI1_init();
     LCD_init();
+    imusetup();
   
-    
     LCD_clearScreen(ILI9341_PURPLE);
     
-    imusetup();
-
-    /* PUT YOUR LCD, IMU, AND PIN INITIALIZATIONS HERE */
-
-
-
+    
     startTime = _CP0_GET_COUNT();
 
 }
