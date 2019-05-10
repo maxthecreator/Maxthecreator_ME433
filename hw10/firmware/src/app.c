@@ -867,7 +867,7 @@ void APP_Tasks(void) {
 
             //WAIT FOR 5HZ TO PASS OR UNTIL A LETTER IS RECEIVED 
 
-            if (appData.isReadComplete || _CP0_GET_COUNT() - startTime > (48000000 / 2 / 400)) {
+            if (appData.isReadComplete || _CP0_GET_COUNT() - startTime > (48000000 / 2 / 100)) {
 
                 appData.state = APP_STATE_SCHEDULE_WRITE;
 
@@ -942,7 +942,7 @@ void APP_Tasks(void) {
             xacc = (array[9] << 8) | array[8];
             yacc = (array[11] << 8) | array[10];
             zacc = (array[13] << 8) | array[12];
- 
+ /*
             sprintf(xaccmessage, "Xacc is:%d  ", xacc);
             sprintf(yaccmessage, "Yacc is:%d  ", yacc);
             sprintf(zaccmessage, "Zacc is:%d  ", zacc);
@@ -982,7 +982,7 @@ void APP_Tasks(void) {
             LCD_drawBarDown(102, 168, 80, percent4, ILI9341_BLACK, ILI9341_WHITE);
             LCD_drawBar(102, 160, 8, 100, ILI9341_BLACK, ILI9341_WHITE);
 
-            
+  */          
             
 
             len = sprintf(dataOut, "%d      %d    %d    %d       %d    %d    %d\r\n", i, xacc, yacc, zacc, xrot, yrot, zrot);
