@@ -333,6 +333,9 @@ typedef struct
     /* Application CDC read buffer */
 
     uint8_t * readBuffer;
+    
+    bool rstate;
+    int rcounter;
 
 
 

@@ -817,7 +817,8 @@ void APP_Tasks(void) {
                         THAT WAS SENT FROM THE COMPUTER */
                 
                 if (appData.readBuffer[0] == 'r'){
-                    //something
+                    appData.rstate = true;
+                    appData.rcounter = 0;
                 }
 
                         /* YOU COULD PUT AN IF STATEMENT HERE TO DETERMINE WHICH LETTER
@@ -831,7 +832,7 @@ void APP_Tasks(void) {
                 if (appData.readTransferHandle == USB_DEVICE_CDC_TRANSFER_HANDLE_INVALID) {
 
                     appData.state = APP_STATE_ERROR;
-
+                    
                     break;
 
                 }
@@ -866,7 +867,7 @@ void APP_Tasks(void) {
 
             //WAIT FOR 5HZ TO PASS OR UNTIL A LETTER IS RECEIVED 
 
-            if (appData.isReadComplete || _CP0_GET_COUNT() - startTime > (48000000 / 2 / 5)) {
+            if (appData.isReadComplete || _CP0_GET_COUNT() - startTime > (48000000 / 2 / 400)) {
 
                 appData.state = APP_STATE_SCHEDULE_WRITE;
 
@@ -984,11 +985,11 @@ void APP_Tasks(void) {
             
             
 
-            len = sprintf(dataOut, "%d\r\n", i);
+            len = sprintf(dataOut, "%d      %d    %d    %d       %d    %d    %d\r\n", i, xacc, yacc, zacc, xrot, yrot, zrot);
 
             i++; // increment the index so we see a change in the text
 
-            /* IF A LETTER WAS RECEIVED, ECHO IT BACK SO THE USER CAN SEE IT */
+            /* IF A LETTER WAS RECEIVED, ECHO IT BACK SO THE USER CAN SEE IT 
 
             if (appData.isReadComplete) {
 
@@ -1001,11 +1002,12 @@ void APP_Tasks(void) {
                         USB_DEVICE_CDC_TRANSFER_FLAGS_DATA_COMPLETE);
 
             }
+             */ 
 
             /* ELSE SEND THE MESSAGE YOU WANTED TO SEND */
 
-            else {
-
+          
+            if (appData.rstate == true){
                 USB_DEVICE_CDC_Write(USB_DEVICE_CDC_INDEX_0,
 
                         &appData.writeTransferHandle, dataOut, len,
@@ -1013,10 +1015,37 @@ void APP_Tasks(void) {
                         USB_DEVICE_CDC_TRANSFER_FLAGS_DATA_COMPLETE);
 
                 startTime = _CP0_GET_COUNT(); // reset the timer for acurate delays
+                
+                //char debugmessage[30];
+                
+                //sprintf(debugmessage, "rcount is: %d  boolean is %d", appData.rcounter, appData.rstate);
 
+                //LCD_drawString(debugmessage, 30, 270, ILI9341_WHITE, ILI9341_PURPLE);
+                
+                appData.rcounter++;
+                if (appData.rcounter > 99){
+                    appData.rstate = false;
+                    appData.rcounter = 0;
+              
+                }
             }
+            else{
+                i=0;
+                len = 1;
+                dataOut[0] = 0;
+                USB_DEVICE_CDC_Write(USB_DEVICE_CDC_INDEX_0,
 
-            break;
+                        &appData.writeTransferHandle, dataOut, len,
+
+                        USB_DEVICE_CDC_TRANSFER_FLAGS_DATA_COMPLETE);
+
+                startTime = _CP0_GET_COUNT(); // reset the timer for acurate delays
+            }
+            
+           
+      
+
+          //  break;
 
 
 
