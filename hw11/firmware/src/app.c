@@ -935,7 +935,8 @@ void APP_Tasks(void) {
             I2C_read_multiple(imuadd, readreg, array, arlength);
 
             short xacc, yacc, zacc, temp, xrot, yrot, zrot;
-            
+            short ZMAF, ZIIR, ZFIR;
+            short zbuffer[4];
             
             temp = (array[1] << 8) | array[0];
             xrot = (array[3] << 8) | array[2];
@@ -985,8 +986,14 @@ void APP_Tasks(void) {
             LCD_drawBar(102, 160, 8, 100, ILI9341_BLACK, ILI9341_WHITE);
 
   */          
-             
-            len = sprintf(dataOut, "%d      %d    %d    %d    %d    %d    %d\r\n", i, xacc, yacc, zacc, xrot, yrot, zrot);
+            zbuffer[3] = zbuffer[2];
+            zbuffer[2] = zbuffer[1];
+            zbuffer[1] = zbuffer[0];
+            zbuffer[0] = zacc;
+            
+            ZMAF = (zbuffer[0] + zbuffer[1] + zbuffer[2] + zbuffer[3])/4;
+
+            len = sprintf(dataOut, "%d      %d    %d\r\n", i, zacc, ZMAF);
 
             i++; // increment the index so we see a change in the text
 

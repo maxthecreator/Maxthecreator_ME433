@@ -1,181 +1,80 @@
 /*******************************************************************************
-
-  MPLAB Harmony Project Main Source File
-
-
-
-  Company:
-
-    Microchip Technology Inc.
-
-  
+ System Interrupts File
 
   File Name:
-
-    main.c
-
-
+    system_interrupt.c
 
   Summary:
-
-    This file contains the "main" function for an MPLAB Harmony project.
-
-
+    Raw ISR definitions.
 
   Description:
+    This file contains a definitions of the raw ISRs required to support the
+    interrupt sub-system.
 
-    This file contains the "main" function for an MPLAB Harmony project.  The
+  Summary:
+    This file contains source code for the interrupt vector functions in the
+    system.
 
-    "main" function calls the "SYS_Initialize" function to initialize the state 
+  Description:
+    This file contains source code for the interrupt vector functions in the
+    system.  It implements the system and part specific vector "stub" functions
+    from which the individual "Tasks" functions are called for any modules
+    executing interrupt-driven in the MPLAB Harmony system.
 
-    machines of all MPLAB Harmony modules in the system and it calls the 
-
-    "SYS_Tasks" function from within a system-wide "super" loop to maintain 
-
-    their correct operation. These two functions are implemented in 
-
-    configuration-specific files (usually "system_init.c" and "system_tasks.c")
-
-    in a configuration-specific folder under the "src/system_config" folder 
-
-    within this project's top-level folder.  An MPLAB Harmony project may have
-
-    more than one configuration, each contained within it's own folder under
-
-    the "system_config" folder.
-
+  Remarks:
+    This file requires access to the systemObjects global data structure that
+    contains the object handles to all MPLAB Harmony module objects executing
+    interrupt-driven in the system.  These handles are passed into the individual
+    module "Tasks" functions to identify the instance of the module to maintain.
  *******************************************************************************/
-
-
 
 // DOM-IGNORE-BEGIN
-
 /*******************************************************************************
+Copyright (c) 2011-2014 released Microchip Technology Inc.  All rights reserved.
 
-Copyright (c) 2013-2014 released Microchip Technology Inc.  All rights reserved.
-
-
-
-//Microchip licenses to you the right to use, modify, copy and distribute
-
+Microchip licenses to you the right to use, modify, copy and distribute
 Software only when embedded on a Microchip microcontroller or digital signal
-
 controller that is integrated into your product or third party product
-
 (pursuant to the sublicense terms in the accompanying license agreement).
 
-
-
 You should refer to the license agreement accompanying this Software for
-
 additional information regarding your rights and obligations.
 
-
-
 SOFTWARE AND DOCUMENTATION ARE PROVIDED "AS IS" WITHOUT WARRANTY OF ANY KIND,
-
 EITHER EXPRESS OR IMPLIED, INCLUDING WITHOUT LIMITATION, ANY WARRANTY OF
-
 MERCHANTABILITY, TITLE, NON-INFRINGEMENT AND FITNESS FOR A PARTICULAR PURPOSE.
-
 IN NO EVENT SHALL MICROCHIP OR ITS LICENSORS BE LIABLE OR OBLIGATED UNDER
-
 CONTRACT, NEGLIGENCE, STRICT LIABILITY, CONTRIBUTION, BREACH OF WARRANTY, OR
-
 OTHER LEGAL EQUITABLE THEORY ANY DIRECT OR INDIRECT DAMAGES OR EXPENSES
-
 INCLUDING BUT NOT LIMITED TO ANY INCIDENTAL, SPECIAL, INDIRECT, PUNITIVE OR
-
 CONSEQUENTIAL DAMAGES, LOST PROFITS OR LOST DATA, COST OF PROCUREMENT OF
-
 SUBSTITUTE GOODS, TECHNOLOGY, SERVICES, OR ANY CLAIMS BY THIRD PARTIES
-
 (INCLUDING BUT NOT LIMITED TO ANY DEFENSE THEREOF), OR OTHER SIMILAR COSTS.
-
  *******************************************************************************/
-
 // DOM-IGNORE-END
 
-
-
-
-
 // *****************************************************************************
-
 // *****************************************************************************
-
 // Section: Included Files
-
+// *****************************************************************************
 // *****************************************************************************
 
-// *****************************************************************************
-
-
-
-#include <stddef.h>                     // Defines NULL
-
-#include <stdbool.h>                    // Defines true
-
-#include <stdlib.h>                     // Defines EXIT_FAILURE
-
-#include "system/common/sys_module.h"   // SYS function prototypes
-
-
-
-
+#include "system/common/sys_common.h"
+#include "app.h"
+#include "system_definitions.h"
 
 // *****************************************************************************
-
+// *****************************************************************************
+// Section: System Interrupt Vector Functions
+// *****************************************************************************
 // *****************************************************************************
 
-// Section: Main Entry Point
-
-// *****************************************************************************
-
-// *****************************************************************************
-
-
-
-int main ( void )
-
+ 
+void __ISR(_USB_1_VECTOR, ipl4AUTO) _IntHandlerUSBInstance0(void)
 {
-
-    /* Initialize all MPLAB Harmony modules, including application(s). */
-
-    SYS_Initialize ( NULL );
-
-
-
-
-
-    while ( true )
-
-    {
-
-        /* Maintain state machines of all polled MPLAB Harmony modules. */
-
-        SYS_Tasks ( );
-
-
-
-    }
-
-
-
-    /* Execution should not come here during normal operation */
-
-
-
-    return ( EXIT_FAILURE );
-
+    DRV_USBFS_Tasks_ISR(sysObj.drvUSBObject);
 }
 
-
-
-
-
 /*******************************************************************************
-
  End of File
-
 */
