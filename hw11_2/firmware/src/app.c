@@ -936,6 +936,7 @@ void APP_Tasks(void) {
             I2C_read_multiple(imuadd, readreg, array, arlength);
 
             short xacc, yacc, zacc, temp, xrot, yrot, zrot;
+           
             
             
             temp = (array[1] << 8) | array[0];
@@ -945,7 +946,12 @@ void APP_Tasks(void) {
             xacc = (array[9] << 8) | array[8];
             yacc = (array[11] << 8) | array[10];
             zacc = (array[13] << 8) | array[12];
+            
+          
+                   
+            
  /*
+  
             sprintf(xaccmessage, "Xacc is:%d  ", xacc);
             sprintf(yaccmessage, "Yacc is:%d  ", yacc);
             sprintf(zaccmessage, "Zacc is:%d  ", zacc);

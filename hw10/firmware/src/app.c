@@ -116,6 +116,9 @@ SUBSTITUTE GOODS, TECHNOLOGY, SERVICES, OR ANY CLAIMS BY THIRD PARTIES
 #include "ili2.h"
 #include "imu.H"
 
+short mafbuf[4];
+short iir = 0;
+short firbuf[6];
 
 // *****************************************************************************
 
@@ -918,7 +921,7 @@ void APP_Tasks(void) {
             char xrotmessage[20];
             char yrotmessage[20];
             char zrotmessage[20];
-
+            
 
             char c;
 
@@ -944,6 +947,23 @@ void APP_Tasks(void) {
             xacc = (array[9] << 8) | array[8];
             yacc = (array[11] << 8) | array[10];
             zacc = (array[13] << 8) | array[12];
+            mafbuf[3] = mafbuf[2];
+            mafbuf[2] = mafbuf[1];
+            mafbuf[1] = mafbuf[0];
+            mafbuf[0] = zacc;
+            
+            
+            
+            iir = .3*iir + .7*zacc;
+            
+            
+            firbuf[5] = firbuf[4];
+            firbuf[4] = firbuf[3];
+            firbuf[3] = firbuf[2];
+            firbuf[2] = firbuf[1];
+            firbuf[1] = firbuf[0];
+            firbuf[0] = zacc;
+            
  /*
             sprintf(xaccmessage, "Xacc is:%d  ", xacc);
             sprintf(yaccmessage, "Yacc is:%d  ", yacc);
@@ -985,8 +1005,15 @@ void APP_Tasks(void) {
             LCD_drawBar(102, 160, 8, 100, ILI9341_BLACK, ILI9341_WHITE);
 
   */          
-             
-            len = sprintf(dataOut, "%d      %d    %d    %d    %d    %d    %d\r\n", i, xacc, yacc, zacc, xrot, yrot, zrot);
+            short maf;
+           
+            maf = (mafbuf[0] + mafbuf[1] + mafbuf[2] + mafbuf[3])/4;
+            
+            short fir;
+            
+            fir = firbuf[0]*0.0264 + firbuf[1]*0.1405 + firbuf[2]*0.3331 + firbuf[3]*0.3331 + firbuf[4]*0.1405 + firbuf[5]*0.0264;
+            
+            len = sprintf(dataOut, "%d      %d    %d    %d    %d\r\n", i, zacc, maf, iir, fir);
 
             i++; // increment the index so we see a change in the text
 
