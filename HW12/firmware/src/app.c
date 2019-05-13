@@ -109,8 +109,16 @@ SUBSTITUTE GOODS, TECHNOLOGY, SERVICES, OR ANY CLAIMS BY THIRD PARTIES
 
 
 #include "app.h"
+#include "imu.H"
+#include "ili2.h"
 
 
+static uint8_t inc = 0;
+int arlength = 14;
+unsigned char array[14];
+unsigned short percent1, percent2, percent3, percent4;
+unsigned short x, y;
+int z;
 
 
 
@@ -537,7 +545,12 @@ void APP_Initialize(void) {
     appData.hidInstance = 0;
 
     appData.isMouseReportSendBusy = false;
-
+    
+    SPI1_init();
+    LCD_init();
+    imusetup();
+  
+    LCD_clearScreen(ILI9341_PURPLE);
 }
 
 
@@ -632,20 +645,74 @@ void APP_Tasks(void) {
 
         case APP_STATE_MOUSE_EMULATE:
 
+           
+            I2C_read_multiple(imuadd, readreg, array, arlength);
+            XPT2046_read(&x, &y, &z);
+ 
+            short xacc, yacc, zacc, temp, xrot, yrot, zrot, xmouse, ymouse;
             
-
-            // every 50th loop, or 20 times per second
+            temp = (array[1] << 8) | array[0];
+            xrot = (array[3] << 8) | array[2];
+            yrot = (array[5] << 8) | array[4];
+            zrot = (array[7] << 8) | array[6];
+            xacc = (array[9] << 8) | array[8];
+            yacc = (array[11] << 8) | array[10];
+            zacc = (array[13] << 8) | array[12];
 
             
+            percent1 = 0;
+            percent2 = 0;
+            percent3 = 0;
+            percent4 = 0;
 
+            if (xacc>0){
+                percent1 = xacc/160;
+                xmouse = -percent1/2;
+            }
+            else{
+                percent2 = -xacc/160;
+                xmouse = percent2/2;
+            }
+            if (yacc>0){
+                percent3 = yacc/160;
+                ymouse = -percent3/2;
+            }
+            else{
+                percent4 = -yacc/160;
+                ymouse = percent4/2;
+            }
+            LCD_drawBar(110, 160, 80, percent2, ILI9341_BLACK, ILI9341_WHITE);
+            LCD_drawBarLeft(101, 160, 80, percent1, ILI9341_BLACK, ILI9341_WHITE);
+            LCD_drawBarUp(102, 159, 80, percent3, ILI9341_BLACK, ILI9341_WHITE);
+            LCD_drawBarDown(102, 168, 80, percent4, ILI9341_BLACK, ILI9341_WHITE);
+            LCD_drawBar(102, 160, 8, 100, ILI9341_BLACK, ILI9341_WHITE);
+            
+            while (_CP0_GET_COUNT() <= 1200000) {
+            }
+            _CP0_SET_COUNT(0);
+
+            
+            
                 appData.mouseButton[0] = MOUSE_BUTTON_STATE_RELEASED;
 
                 appData.mouseButton[1] = MOUSE_BUTTON_STATE_RELEASED;
+                
+               if (z>1000){
+                   appData.mouseButton[0] = MOUSE_BUTTON_STATE_PRESSED;
+               } 
+                
 
-                appData.xCoordinate = 1;
+       //     if (inc == 10){
+                appData.xCoordinate = xmouse;
 
-                appData.yCoordinate = 1;
+                appData.yCoordinate = ymouse;
+       //         inc = 0;
+       //     }
+       //     else{
+              //  appData.xCoordinate = 1;
 
+              //  appData.yCoordinate = 1;
+       //     }
                 
 
                 
