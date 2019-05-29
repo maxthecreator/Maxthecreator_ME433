@@ -127,7 +127,33 @@ void APP_Initialize ( void )
   
     LCD_clearScreen(ILI9341_PURPLE);
     
-    RPA0Rbits.RPA0R = 0101;
+    RPA0Rbits.RPA0R = 0b0101;
+    TRISBbits.TRISB13 = 0;
+    
+    T2CONbits.TCKPS = 0; // Timer2 prescaler N=1 (1:1)
+    PR2 = 2399; // PR = PBCLK / N / desiredF - 1
+    TMR2 = 0; // initial TMR2 count is 0
+    OC1CONbits.OCM = 0b110; // PWM mode without fault pin; other OC1CON bits are defaults
+    OC1RS = 0; // duty cycle
+    OC1R = 0; // initialize before turning OC1 on; afterward it is read-only
+    T2CONbits.ON = 1; // turn on Timer2
+    OC1CONbits.ON = 1; // turn on OC1
+    
+    T3CONbits.ON = 1;
+    T3CONbits.TCKPS = 0;
+    PR3 = 479;
+    
+    IECx, x=0, 1, or 2
+    IFSx, x=0, 1, or 2
+    IPCy, y=0 to 15 
+            
+    void __ISR(_TIMER3_VECTOR, IPL5SOFT) Timer3ISR(void) { 
+    IFS0bits.T3IF = 0;
+    // how many times has the interrupt occurred?
+    // set the duty cycle and direction pin
+    }
+    
+    
     
     __builtin_enable_interrupts();
     /* TODO: Initialize your application's state machine and other
