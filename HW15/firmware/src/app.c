@@ -56,7 +56,8 @@ SUBSTITUTE GOODS, TECHNOLOGY, SERVICES, OR ANY CLAIMS BY THIRD PARTIES
 #include "app.h"
 #include "imu.H"
 #include "ili2.h"
-
+int interruptcount = 0;
+int direction = 1;
 // *****************************************************************************
 // *****************************************************************************
 // Section: Global Data Definitions
@@ -150,7 +151,15 @@ void APP_Initialize ( void )
     void __ISR(_TIMER3_VECTOR, IPL5SOFT) Timer3ISR(void) { 
     IFS0bits.T3IF = 0;
     // how many times has the interrupt occurred?
+    interruptcount = interruptcount + direction;    
     // set the duty cycle and direction pin
+    if (interruptcount >= 100){
+        direction = -1;
+    }
+    if (interruptcount <= 0){
+        direction = 1;
+    }
+    OC1RS = 4.8*interruptcount;
     }
     
     
