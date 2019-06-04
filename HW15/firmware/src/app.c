@@ -58,6 +58,24 @@ SUBSTITUTE GOODS, TECHNOLOGY, SERVICES, OR ANY CLAIMS BY THIRD PARTIES
 #include "ili2.h"
 int interruptcount = 0;
 int direction = 1;
+
+
+
+void __ISR(_TIMER_3_VECTOR, IPL5SOFT) Timer3ISR(void) { 
+    IFS0bits.T3IF = 0;
+    // how many times has the interrupt occurred?
+    interruptcount = interruptcount + direction;    
+    // set the duty cycle and direction pin
+    if (interruptcount >= 100){
+        direction = -1;
+        LATBbits.LATB13 = 0;
+    }
+    if (interruptcount <= 0){
+        direction = 1;
+        LATBbits.LATB13 = 1;
+    }
+    OC1RS = 5*interruptcount; // should be 4.8
+    }
 // *****************************************************************************
 // *****************************************************************************
 // Section: Global Data Definitions
@@ -130,6 +148,7 @@ void APP_Initialize ( void )
     
     RPA0Rbits.RPA0R = 0b0101;
     TRISBbits.TRISB13 = 0;
+    LATBbits.LATB13 = 1;
     
     T2CONbits.TCKPS = 0; // Timer2 prescaler N=1 (1:1)
     PR2 = 2399; // PR = PBCLK / N / desiredF - 1
@@ -141,26 +160,18 @@ void APP_Initialize ( void )
     OC1CONbits.ON = 1; // turn on OC1
     
     T3CONbits.ON = 1;
-    T3CONbits.TCKPS = 0;
-    PR3 = 479;
+    T3CONbits.TCKPS = 0b11; //was 0b01
+    PR3 = 59999; //was 59999
     
-    IECx, x=0, 1, or 2
-    IFSx, x=0, 1, or 2
-    IPCy, y=0 to 15 
+    IEC0bits.T3IE = 1;
+    //IECx, x=0, 1, or 2
+    IFS0bits.T3IF = 1;
+    // IFSx, x=0, 1, or 2
+    IPC3bits.T3IP = 0b101;
+    IPC3bits.T3IS = 0b1;
+    //IPCy, y=0 to 15 
             
-    void __ISR(_TIMER3_VECTOR, IPL5SOFT) Timer3ISR(void) { 
-    IFS0bits.T3IF = 0;
-    // how many times has the interrupt occurred?
-    interruptcount = interruptcount + direction;    
-    // set the duty cycle and direction pin
-    if (interruptcount >= 100){
-        direction = -1;
-    }
-    if (interruptcount <= 0){
-        direction = 1;
-    }
-    OC1RS = 4.8*interruptcount;
-    }
+    
     
     
     
