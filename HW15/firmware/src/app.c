@@ -213,9 +213,30 @@ void APP_Tasks ( void )
         case APP_STATE_SERVICE_TASKS:
         {
         
-            break;
-        }
+            
 
+        unsigned char sample[240]; 
+        unsigned char sample2[240];
+        unsigned char sample3[240];
+        int i = 0;
+        for (i = 0; i<240; i++){
+            sample[i] = i;
+        }
+        for (i = 0; i<240; i++){
+            sample2[i] = 255-i;
+        }
+        for (i = 0; i < 120; i++){
+            sample3[i] = 2*i;
+        }
+        for (i=120; i<240; i++){
+            sample3[i] = 255-2*i;
+        }
+        LCD_plotArray(sample, 0, 60, ILI9341_WHITE,240);
+        LCD_plotArray(sample2, 0, 120, ILI9341_GREEN,240);
+        LCD_plotArray(sample3, 0, 180, ILI9341_YELLOW,240);
+        break;
+        }
+        
         /* TODO: implement your application state machine.*/
         
 

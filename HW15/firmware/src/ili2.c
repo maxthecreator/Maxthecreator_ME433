@@ -653,3 +653,12 @@ void LCD_drawButton(unsigned short x, unsigned short y, unsigned short width, un
         }
     }
 }
+void LCD_plotArray(char* array, unsigned short x, unsigned short y, unsigned short color, int arraylength){
+    int i = 0;
+    unsigned char temp;
+    for (i = 0; i < arraylength; i++){
+        temp = array[i];
+        temp = temp >> 5;
+        LCD_drawPixel(x + i, y - temp*2, color);
+    }
+}

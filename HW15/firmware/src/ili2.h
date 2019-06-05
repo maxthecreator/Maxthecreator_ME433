@@ -433,4 +433,6 @@ void LCD_drawBarUp(unsigned short x, unsigned short y, unsigned short length, un
 
 void XPT2046_read(unsigned short *x, unsigned short *y, unsigned int *z);
 
+void LCD_plotArray(char* array, unsigned short x, unsigned short y, unsigned short color, int arraylength);
+
 #endif

@@ -602,3 +602,12 @@ void LCD_drawBarDown(unsigned short x, unsigned short y, unsigned short length, 
         }
     }
 }
+void LCD_plotArray(char* array, unsigned short x, unsigned short y, unsigned short color, int arraylength){
+    int i = 0;
+    int temp;
+    for (i = 0; i < arraylength; i++){
+        temp = array[i];
+        temp = temp >> 5;
+        LCD_drawPixel(x + i, y + temp*20, color);
+    }
+}
