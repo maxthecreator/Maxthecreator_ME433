@@ -372,9 +372,9 @@ void LCD_init() {
 
 void SPI1_init() {
 
-  SDI1Rbits.SDI1R = 0b0100; // B8 is SDI1
+  SDI1Rbits.SDI1R = 0b0000; // A1 is SDI1
 
-  RPA1Rbits.RPA1R = 0b0011; // A1 is SDO1
+  RPA0Rbits.RPA0R = 0b0011; // A0 is SDO1
 
   TRISBbits.TRISB7 = 0; // CS is B7
   

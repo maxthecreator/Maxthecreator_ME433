@@ -129,8 +129,38 @@ void startup() {
     TRISBbits.TRISB4 = 1;
 
     
+ 
 
+    T2CONbits.TCKPS = 0; // Timer2 prescaler N=1 (1:1)
+    PR2 = 2399; // PR = PBCLK / N / desiredF - 1
+    TMR2 = 0; // initial TMR2 count is 0
+    OC1CONbits.OCM = 0b110; // PWM mode without fault pin; other OC1CON bits are defaults
+    OC1RS = 600; // duty cycle
+    OC1R = 0; // initialize before turning OC1 on; afterward it is read-only
+    OC4CONbits.OCM = 0b110;
+    OC4RS = 600;
+    OC4R = 0;
+    RPA4Rbits.RPA4R = 0b0101;
+    RPB15Rbits.RPB15R = 0b0101;
     
+   
+    
+    
+    //Timer 3 for interrupt
+    /*
+    T3CONbits.TCKPS = 0b11; //was 0b01
+    PR3 = 59999; //was 59999
+    
+    IEC0bits.T3IE = 1;
+    //IECx, x=0, 1, or 2
+    IFS0bits.T3IF = 1;
+    // IFSx, x=0, 1, or 2
+    IPC3bits.T3IP = 0b101;
+    IPC3bits.T3IS = 0b1;
+   */ T2CONbits.ON = 1; // turn on Timer2
+    //T3CONbits.ON = 1;
+    OC1CONbits.ON = 1; // turn on OC1
+    OC4CONbits.ON = 1;
 
 }
 
@@ -146,11 +176,11 @@ int main() {
 
     startup();
 
-    SPI1_init();
-    LCD_init();
+   // SPI1_init();
+   // LCD_init();
   
   
-    LCD_clearScreen(ILI9341_PURPLE);
+   // LCD_clearScreen(ILI9341_PURPLE);
 
     __builtin_enable_interrupts();
 
@@ -159,7 +189,8 @@ int main() {
        
 
     while(1) {
-
+        OC1RS = 300;
+        OC4RS = 300;
 
 
         _CP0_SET_COUNT(0);
